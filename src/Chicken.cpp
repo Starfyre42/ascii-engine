@@ -3,7 +3,7 @@
 
 // Constructor
 Chicken::Chicken(int x, int y):
-    Animal("chicken",x ,y)
+    Animal("chicken","c",x ,y)
     {}
 
 // The mandatory cry function, calls base cry with the cry

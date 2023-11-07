@@ -1,5 +1,5 @@
-#include <ncurses.h>
 #include <ctime>
+#include <curses.h>
 
 #include "GameEngine.h"
 
@@ -34,10 +34,25 @@ void GameEngine::start(){
     noecho();  // Don't display user input
     cbreak();  // Line buffering disabled
     keypad(stdscr, TRUE);  // Enable special keys
+   
+    start_color();
+    init_pair(1, COLOR_WHITE, COLOR_BLACK);
+
+    refresh();
+    curs_set(0);
+
+    contentWindow = newwin(height - 4, width, 0, 0);
+    dialogWindow = newwin(4, width, height - 4, 0);
+   
+    wborder(dialogWindow, borderChar[2],borderChar[6], borderChar[0],borderChar[4],borderChar[7],borderChar[1],borderChar[5],borderChar[3]);
+    wrefresh(dialogWindow);
+    draw();
 }
 
 // The stop function just ends everything
 void GameEngine::stop(){
+    delwin(dialogWindow);
+    delwin(contentWindow);
     endwin();  // End ncurses
 }
 
@@ -49,51 +64,15 @@ void GameEngine::step(){
 
 // Draws a frame
 void GameEngine::draw(){
-    clear();  // Clear the screen
+   wclear(contentWindow);
 
-    // Draw the top border with some overdraw
-    for (int i = 0; i < width + borderOverdraw; i++) {
-        printw(borderChar.c_str());
+   for (const auto& animal : animals) {
+       mvwprintw(contentWindow, animal->y, animal->x,animal->symbol.c_str());
     }
-    printw("\n");
-
-    // Loop through each cell in the grid and fill it with something
-    // Auto prepend borders to left and right
-    for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
-
-            // If the column is at the start of the row, then prepend a border
-            // j = column, so j == 0 means the 1st column of the current row or
-            // the start of the row
-            if (j == 0) {
-                printw(borderChar.c_str());  // Draw the left border
-            }
-   
-            // This normally needs to be more complex, but right now we keep it
-            // simple, it just prints an empty character (space)
-            printw(" ");
-
-            // If we're at the end of the row, append the right border
-            // a row or column starts at zero meaning the last element is 1 less than the size
-            // so 1 less than with is the last element of a row
-            // j = column, so this means the last column of the current row
-            if (j == width - 1) {
-                printw(borderChar.c_str());  // Draw the right border
-            }
-        }
-        printw("\n");
-    }
-
-    // Draw the bottom border
-    for (int i = 0; i < width + borderOverdraw; i++) {
-        printw(borderChar.c_str());
-    }
-    printw("\n");
-
-    // This is reserved for messages below the game window
-    // But it's unimplemented thus far
-    //printw("Score: %d\n", score);
-    refresh();
+    
+    move(height, width);
+    wborder(contentWindow, borderChar[2],borderChar[6], borderChar[0],borderChar[4],borderChar[7],borderChar[1],borderChar[5],borderChar[3]);
+    wrefresh(contentWindow);
 }
 
 // This pauses and asks the user to press any key to continue

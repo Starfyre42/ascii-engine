@@ -2,8 +2,9 @@
 #include "Animal.h"
 
 // Constructor
-Animal::Animal(string species, int x, int y):
+Animal::Animal(string species,string symbol, int x, int y):
     species(species),
+    symbol(symbol),
     x(x),
     y(y)
     {}

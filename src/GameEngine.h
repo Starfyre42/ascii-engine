@@ -1,7 +1,11 @@
-#ifndef GAMEENGINE_H
-#define GAMEENGINE_H
+#pragma once
 
+#include <ncurses.h>
 #include <string>
+#include <vector>
+#include <memory>
+
+#include "Animal.h"
 
 using namespace std;
 
@@ -15,7 +19,7 @@ public:
     GameEngine(int width,
         int height, 
         bool autoStart=true, 
-        string borderChar="#", 
+        string borderChar="-*|*-*|*", 
         int borderOverdraw=2);
 
     // Deconstructor
@@ -29,6 +33,8 @@ public:
     void step(); // Render next frame
     void askContinue(); // Pause and ask to continue
     int getInput(); // Get input key
+    
+    vector<unique_ptr<Animal>> animals;
 
 private:
     void draw(); // Draw the frame
@@ -36,9 +42,6 @@ private:
     // Width and Height of engine display
     int width;
     int height;
-
-    // @TODO This is redundant and needs to be deleted
-    bool gameover=false;
 
     // Whether it should auto start and stop or not
     bool autoStart;
@@ -48,6 +51,8 @@ private:
 
     // How much longer the top and bottom border should be
     int borderOverdraw;
-};
 
-#endif
+    //creates windows ncurses/fuck C
+    WINDOW* contentWindow;
+    WINDOW* dialogWindow;
+};

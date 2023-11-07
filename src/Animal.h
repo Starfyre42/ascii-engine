@@ -1,5 +1,4 @@
-#ifndef ANIMAL_H
-#define ANIMAL_H
+#pragma once
 
 // Strings
 #include <string>
@@ -34,20 +33,21 @@ class Animal{
     //implemention debug function
     virtual void dump();
 
+    //variables 
+    string species;
+    string symbol;
+    int x;
+    int y;
+
     // These are available to any child class only
     protected:
 
     // Allow child classes to inherit from the base class
     // But prohibit this class from being instantiated directly
-    Animal(string species, int x=0, int y=0);
+    Animal(string species, string symbol, int x=0, int y=0);
 
     // An internal method child classes can use to printout the cry
     void baseCry(string fx);
     
-    // Variables for child classes only
-    string species;
-    int x;
-    int y;
+   
 };
-
-#endif

@@ -14,7 +14,7 @@ SOURCES = $(shell find $(SRCDIR) -type f -name "*.cpp")
 OBJECTS = $(SOURCES:$(SRCDIR)/%.cpp=$(BUILDDIR)/%.o)
 
 # Libraries to link (in this case, ncurses)
-LIBS = -lncurses
+LIBS = -lncurses -lcdk
 
 # Main build target
 all: $(EXECUTABLE)

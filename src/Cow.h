@@ -1,5 +1,4 @@
-#ifndef COW_H
-#define COW_H
+#pragma once
 
 #include "Animal.h"
 
@@ -9,5 +8,3 @@ class Cow : public Animal{
 
         void cry() override;
 };
-
-#endif
