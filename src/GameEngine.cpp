@@ -2,19 +2,13 @@
 #include <curses.h>
 
 #include "GameEngine.h"
+#include "AbstractLevel.h"
 
 // Construtor, it just initializes a lot of variables and calls
 // start if set to auto start
-GameEngine::GameEngine(int width,
-    int height, 
-    bool autoStart, 
-    string borderChar,
-    int borderOverdraw):
-    width(width),
-    height(height),
-    autoStart(autoStart),
-    borderChar(borderChar),
-    borderOverdraw(borderOverdraw)
+GameEngine::GameEngine(AbstractLevel* startingLevel, bool autoStart):
+    curLevel(startingLevel),
+    autoStart(autoStart)
 {
     // Auto start if set to
     if(autoStart)
@@ -36,43 +30,28 @@ void GameEngine::start(){
     keypad(stdscr, TRUE);  // Enable special keys
    
     start_color();
-    init_pair(1, COLOR_WHITE, COLOR_BLACK);
 
     refresh();
     curs_set(0);
 
-    contentWindow = newwin(height - 4, width, 0, 0);
-    dialogWindow = newwin(4, width, height - 4, 0);
-   
-    wborder(dialogWindow, borderChar[2],borderChar[6], borderChar[0],borderChar[4],borderChar[7],borderChar[1],borderChar[5],borderChar[3]);
-    wrefresh(dialogWindow);
-    draw();
+    if(curLevel !=nullptr)
+        curLevel->start();
+  
+    redraw();
 }
 
 // The stop function just ends everything
 void GameEngine::stop(){
-    delwin(dialogWindow);
-    delwin(contentWindow);
+    if(curLevel !=nullptr)
+        curLevel->stop();
+
     endwin();  // End ncurses
 }
 
-// This will be made more complicated later on, it renders each frame
-// Right now it's very simple and just draws a frame
-void GameEngine::step(){
-    draw();
-}
-
 // Draws a frame
-void GameEngine::draw(){
-   wclear(contentWindow);
-
-   for (const auto& animal : animals) {
-       mvwprintw(contentWindow, animal->y, animal->x,animal->symbol.c_str());
-    }
-    
-    move(height, width);
-    wborder(contentWindow, borderChar[2],borderChar[6], borderChar[0],borderChar[4],borderChar[7],borderChar[1],borderChar[5],borderChar[3]);
-    wrefresh(contentWindow);
+void GameEngine::redraw(){
+  if(curLevel !=nullptr)
+        curLevel->redraw();
 }
 
 // This pauses and asks the user to press any key to continue
@@ -87,3 +66,26 @@ void GameEngine::askContinue(){
 int GameEngine::getInput(){
     return getch();
 }
+void GameEngine::changeLevel(AbstractLevel* newLevel){
+    if(curLevel!=nullptr){
+        curLevel->stop();
+    }
+
+    curLevel=newLevel;
+    curLevel->start();
+}
+
+void GameEngine::drawBorder(WINDOW* win){
+    wborder(
+        win,
+        border[2],
+        border[6], 
+        border[0],
+        border[4],
+        border[7],
+        border[1],
+        border[5],
+        border[3]);
+}
+
+string GameEngine::border="-*|*-*|*";

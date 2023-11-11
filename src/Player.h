@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Animal.h"
+#include "AbstractAnimal.h"
 
-class Player : public Animal {
+class Player : public AbstractAnimal {
 public:
     // Constructor that takes an optional x & y position
     Player(int x=0, int y=0);

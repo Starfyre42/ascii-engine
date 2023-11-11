@@ -1,8 +1,8 @@
 #include <iostream>
-#include "Animal.h"
+#include "AbstractAnimal.h"
 
 // Constructor
-Animal::Animal(string species,string symbol, int x, int y):
+AbstractAnimal::AbstractAnimal(string species,string symbol, int x, int y):
     species(species),
     symbol(symbol),
     x(x),
@@ -10,17 +10,17 @@ Animal::Animal(string species,string symbol, int x, int y):
     {}
 
 // Base cry to print out for child classes
-void Animal::baseCry(string fx){
+void AbstractAnimal::baseCry(string fx){
     cout<<fx<< endl;
 }
 
 // Deconstructor for programming best practices but we're not using it
-Animal::~Animal(){}
+AbstractAnimal::~AbstractAnimal(){}
 
 //move function that allows animals to move based around the direction enumeration
 //note that y-- is up, x++ is right, y++ is down and x-- is left
 // It takes a direction and moves the entity accordingly
-void Animal::move(Direction dir){
+void AbstractAnimal::move(Direction dir){
     switch (dir){
         case UP:
             y--;
@@ -38,7 +38,7 @@ void Animal::move(Direction dir){
 }
 
 // Debug dump
-void Animal::dump(){
+void AbstractAnimal::dump(){
     cout<<species<<endl;
     cout<<x<<endl;
     cout<<y<<endl;

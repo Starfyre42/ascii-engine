@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Animal.h"
+#include "AbstractAnimal.h"
 
-class Cow : public Animal{
+class Cow : public AbstractAnimal{
     public:
         Cow(int x=0, int y=0);
 

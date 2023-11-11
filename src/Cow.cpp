@@ -2,7 +2,7 @@
 #include <iostream>
 
 Cow::Cow(int x,int y):
-    Animal("cow","m",x,y)
+    AbstractAnimal("cow","m",x,y)
     {}
 
 void Cow::cry(){

@@ -3,7 +3,7 @@
 
 // Constructor
 Player::Player(int x, int y):
-    Animal("Player","@",x ,y)
+    AbstractAnimal("Player","@",x ,y)
     {}
 
 // The mandatory cry function, calls base cry with the cry

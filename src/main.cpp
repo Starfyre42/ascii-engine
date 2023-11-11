@@ -18,11 +18,13 @@
 #include <locale.h>
 
 // This apps code
-#include "Animal.h"
+#include "AbstractAnimal.h"
 #include "Chicken.h"
 #include "Cow.h"
 #include "GameEngine.h"
 #include "Player.h"
+#include "AbstractLevel.h"
+#include "EntryLevel.h"
 
 using namespace std;
 
@@ -36,15 +38,18 @@ int main()
     // We make it 20x10 in size
     // autoStart is on, so by creating the engine here, it automatically takes over the
     // terminal and starts the engine
-    unique_ptr<GameEngine> engine = make_unique<GameEngine>(20,10);
+    unique_ptr<GameEngine> engine = make_unique<GameEngine>();
+    EntryLevel* startingLevel = new EntryLevel(*engine);
 
     // push_back adds an array element to the end of the list
     // make_unique instantiates a class onto the heap and returns an exclusive
     // smart pointer which is managed by unique_pointer above
-    engine->animals.push_back(make_unique<Player>(1,1));
-    engine->animals.push_back(make_unique<Chicken>(3,1));
-    engine->animals.push_back(make_unique<Cow>(2,2));
-    engine->animals.push_back(make_unique<Chicken>(1,3));
+    startingLevel->animals.push_back(make_unique<Player>(1,1));
+    startingLevel->animals.push_back(make_unique<Chicken>(3,1));
+    startingLevel->animals.push_back(make_unique<Cow>(2,2));
+    startingLevel->animals.push_back(make_unique<Chicken>(1,3));
+
+    engine->changeLevel(startingLevel);
 
     // Step the engine forward a frame, then check for the exit key
     // If the exit key is pressed, stop rendering frames, otherwise
@@ -53,19 +58,19 @@ int main()
     do {
         switch(ch){
             case 'w':
-                engine->animals[0]->move(Animal::Direction::UP);
+                startingLevel->animals[0]->move(AbstractAnimal::Direction::UP);
                 break;
             case 'a':
-                engine->animals[0]->move(Animal::Direction::LEFT);
+                startingLevel->animals[0]->move(AbstractAnimal::Direction::LEFT);
                 break;
             case 's':
-                engine->animals[0]->move(Animal::Direction::DOWN);
+                startingLevel->animals[0]->move(AbstractAnimal::Direction::DOWN);
                 break;
             case 'd':
-                engine->animals[0]->move(Animal::Direction::RIGHT);
+                startingLevel->animals[0]->move(AbstractAnimal::Direction::RIGHT);
                 break;
         }
-        engine->step();
+        engine->redraw();
     } while((ch = engine->getInput()) != 'x');
 
     // The exit key was pressed, so ask the user to press a key to continue

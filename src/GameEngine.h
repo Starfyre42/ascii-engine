@@ -5,7 +5,13 @@
 #include <vector>
 #include <memory>
 
-#include "Animal.h"
+// GameEngine can't include AbstractLevel while AbstractLevel includes GameEngine
+// Only 1 can include the other
+// So we are letting AbstractLevel include GameEngine
+// and here we are promising the compiler that AbstractLevel does exist even if we can't
+// properly include it. The linker will seek out the class and link it up properly
+// This is just to get the compiler happy
+class AbstractLevel;
 
 using namespace std;
 
@@ -16,11 +22,7 @@ class GameEngine{
 public:
 
     // Constructor that takes a width and height plus optional settings
-    GameEngine(int width,
-        int height, 
-        bool autoStart=true, 
-        string borderChar="-*|*-*|*", 
-        int borderOverdraw=2);
+    GameEngine(AbstractLevel* startingLevel=nullptr, bool autoStart=true);
 
     // Deconstructor
     ~GameEngine();
@@ -29,30 +31,17 @@ public:
     // These two are called for you if autoStart is enabled
     void start();   // Takeover terminal exclusively
     void stop();    // Release control over terminal
+    void redraw(); // Draw the frame
 
-    void step(); // Render next frame
     void askContinue(); // Pause and ask to continue
     int getInput(); // Get input key
+    void drawBorder(WINDOW* win);
+    void changeLevel(AbstractLevel* newLevel);
     
-    vector<unique_ptr<Animal>> animals;
+    AbstractLevel* curLevel;
+    static string border; 
 
 private:
-    void draw(); // Draw the frame
-
-    // Width and Height of engine display
-    int width;
-    int height;
-
     // Whether it should auto start and stop or not
-    bool autoStart;
-
-    // The border character
-    string borderChar;
-
-    // How much longer the top and bottom border should be
-    int borderOverdraw;
-
-    //creates windows ncurses/fuck C
-    WINDOW* contentWindow;
-    WINDOW* dialogWindow;
+    bool autoStart;    
 };

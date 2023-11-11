@@ -1,10 +1,10 @@
 #pragma once
 
 // Include parent header
-#include "Animal.h"
+#include "AbstractAnimal.h"
 
 // Chicken animal
-class Chicken : public Animal {
+class Chicken : public AbstractAnimal {
 public:
     // Constructor that takes an optional x & y position
     Chicken(int x=0, int y=0);
